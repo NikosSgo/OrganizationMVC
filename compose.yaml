@@ -1,0 +1,7 @@
+﻿services:
+  organizationmvc:
+    image: organizationmvc
+    build:
+      context: .
+      dockerfile: OrganizationMVC/Dockerfile
+
