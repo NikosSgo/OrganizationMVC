@@ -15,7 +15,7 @@ public class EmployeeEntity
     public string LastName { get; set; }
 
     [StringLength(100)]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
     public int OrganizationId { get; set; }
 
