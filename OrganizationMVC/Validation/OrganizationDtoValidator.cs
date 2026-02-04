@@ -9,7 +9,11 @@ public class OrganizationDtoValidator:
 {
     public OrganizationDtoValidator()
     {
-        RuleFor(x => x.Name).NotNull().NotEmpty();
-
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(50);
+        RuleFor(x => x.Inn)
+            .NotEmpty()
+            .MaximumLength(30);
     }
 }
