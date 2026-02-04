@@ -1,0 +1,142 @@
+@model EmployeesPageViewModel
+
+@{
+    ViewData["Title"] = "Employees";
+    var currentPage = Model.Employees.Page;
+    var pageSize = Model.Employees.PageSize;
+    var totalPages = Model.Employees.TotalPages;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Employees</h1>
+        <div class="text-muted">Organization: @Model.OrganizationName (Id: @Model.OrganizationId)</div>
+        <div class="text-muted">Total: @Model.Employees.TotalCount</div>
+    </div>
+    <a class="btn btn-outline-secondary"
+       asp-controller="Organization"
+       asp-action="Index">
+        Back to Organizations
+    </a>
+</div>
+
+<div class="table-responsive mb-4">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+        <tr>
+            <th style="width: 80px;">Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Employees.Items.Count == 0)
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted">No employees found.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var employee in Model.Employees.Items)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Email</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+<nav class="d-flex align-items-center gap-2 mb-4">
+    <a class="btn btn-outline-secondary btn-sm @(currentPage <= 1 ? "disabled" : "")"
+       asp-controller="Organization"
+       asp-action="Employees"
+       asp-route-organizationId="@Model.OrganizationId"
+       asp-route-page="@(currentPage - 1)"
+       asp-route-pageSize="@pageSize">Prev</a>
+    <span>Page @currentPage of @totalPages</span>
+    <a class="btn btn-outline-secondary btn-sm @(currentPage >= totalPages ? "disabled" : "")"
+       asp-controller="Organization"
+       asp-action="Employees"
+       asp-route-organizationId="@Model.OrganizationId"
+       asp-route-page="@(currentPage + 1)"
+       asp-route-pageSize="@pageSize">Next</a>
+    <span class="ms-2">Page size:</span>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Employees"
+       asp-route-organizationId="@Model.OrganizationId"
+       asp-route-page="1"
+       asp-route-pageSize="10">10</a>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Employees"
+       asp-route-organizationId="@Model.OrganizationId"
+       asp-route-page="1"
+       asp-route-pageSize="25">25</a>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Employees"
+       asp-route-organizationId="@Model.OrganizationId"
+       asp-route-page="1"
+       asp-route-pageSize="50">50</a>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Batch Insert</h5>
+        <p class="text-muted mb-2">JSON array of employees. Use the organization id in each item.</p>
+        <textarea class="form-control mb-2" rows="5" id="emp-insert-json">[
+  { "firstName": "Anna", "lastName": "Ivanova", "email": "anna@example.com", "organizationId": @Model.OrganizationId },
+  { "firstName": "Ivan", "lastName": "Petrov", "email": "ivan@example.com", "organizationId": @Model.OrganizationId }
+]</textarea>
+        <button class="btn btn-primary"
+                data-batch-btn
+                data-endpoint="/organizations/employees/batch-insert"
+                data-textarea="emp-insert-json"
+                data-result="emp-insert-result">
+            Send
+        </button>
+        <div class="mt-2 text-muted" id="emp-insert-result"></div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Batch Update</h5>
+        <p class="text-muted mb-2">JSON array with existing Ids.</p>
+        <textarea class="form-control mb-2" rows="4" id="emp-update-json">[
+  { "id": 1, "firstName": "Anna", "lastName": "Ivanova", "email": "anna.new@example.com", "organizationId": @Model.OrganizationId }
+]</textarea>
+        <button class="btn btn-primary"
+                data-batch-btn
+                data-endpoint="/organizations/employees/batch-update"
+                data-textarea="emp-update-json"
+                data-result="emp-update-result">
+            Send
+        </button>
+        <div class="mt-2 text-muted" id="emp-update-result"></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Batch Delete</h5>
+        <p class="text-muted mb-2">JSON array of employee ids.</p>
+        <textarea class="form-control mb-2" rows="3" id="emp-delete-json">[ 1, 2, 3 ]</textarea>
+        <button class="btn btn-danger"
+                data-batch-btn
+                data-endpoint="/organizations/employees/batch-delete"
+                data-textarea="emp-delete-json"
+                data-result="emp-delete-result">
+            Delete
+        </button>
+        <div class="mt-2 text-muted" id="emp-delete-result"></div>
+    </div>
+</div>

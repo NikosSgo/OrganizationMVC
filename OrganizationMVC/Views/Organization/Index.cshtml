@@ -1,0 +1,138 @@
+@model OrganizationsPageViewModel
+
+@{
+    ViewData["Title"] = "Organizations";
+    var currentPage = Model.Organizations.Page;
+    var pageSize = Model.Organizations.PageSize;
+    var totalPages = Model.Organizations.TotalPages;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Organizations</h1>
+        <div class="text-muted">Total: @Model.Organizations.TotalCount</div>
+    </div>
+</div>
+
+<div class="table-responsive mb-4">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+        <tr>
+            <th style="width: 80px;">Id</th>
+            <th>Name</th>
+            <th>INN</th>
+            <th style="width: 180px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Organizations.Items.Count == 0)
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted">No organizations found.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var org in Model.Organizations.Items)
+            {
+                <tr>
+                    <td>@org.Id</td>
+                    <td>@org.Name</td>
+                    <td>@org.Inn</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary"
+                           asp-controller="Organization"
+                           asp-action="Employees"
+                           asp-route-organizationId="@org.Id">
+                            Employees
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+<nav class="d-flex align-items-center gap-2 mb-4">
+    <a class="btn btn-outline-secondary btn-sm @(currentPage <= 1 ? "disabled" : "")"
+       asp-controller="Organization"
+       asp-action="Index"
+       asp-route-page="@(currentPage - 1)"
+       asp-route-pageSize="@pageSize">Prev</a>
+    <span>Page @currentPage of @totalPages</span>
+    <a class="btn btn-outline-secondary btn-sm @(currentPage >= totalPages ? "disabled" : "")"
+       asp-controller="Organization"
+       asp-action="Index"
+       asp-route-page="@(currentPage + 1)"
+       asp-route-pageSize="@pageSize">Next</a>
+    <span class="ms-2">Page size:</span>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Index"
+       asp-route-page="1"
+       asp-route-pageSize="10">10</a>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Index"
+       asp-route-page="1"
+       asp-route-pageSize="25">25</a>
+    <a class="btn btn-sm btn-outline-dark"
+       asp-controller="Organization"
+       asp-action="Index"
+       asp-route-page="1"
+       asp-route-pageSize="50">50</a>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Batch Insert</h5>
+        <p class="text-muted mb-2">JSON array of organizations.</p>
+        <textarea class="form-control mb-2" rows="4" id="org-insert-json">[
+  { "name": "Org A", "inn": "1234567890" },
+  { "name": "Org B", "inn": "0987654321" }
+]</textarea>
+        <button class="btn btn-primary"
+                data-batch-btn
+                data-endpoint="/organizations/batch-insert"
+                data-textarea="org-insert-json"
+                data-result="org-insert-result">
+            Send
+        </button>
+        <div class="mt-2 text-muted" id="org-insert-result"></div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Batch Update</h5>
+        <p class="text-muted mb-2">JSON array with existing Ids.</p>
+        <textarea class="form-control mb-2" rows="4" id="org-update-json">[
+  { "id": 1, "name": "Org A Updated", "inn": "1234567890" }
+]</textarea>
+        <button class="btn btn-primary"
+                data-batch-btn
+                data-endpoint="/organizations/batch-update"
+                data-textarea="org-update-json"
+                data-result="org-update-result">
+            Send
+        </button>
+        <div class="mt-2 text-muted" id="org-update-result"></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Batch Delete</h5>
+        <p class="text-muted mb-2">JSON array of organization ids.</p>
+        <textarea class="form-control mb-2" rows="3" id="org-delete-json">[ 1, 2, 3 ]</textarea>
+        <button class="btn btn-danger"
+                data-batch-btn
+                data-endpoint="/organizations/batch-delete"
+                data-textarea="org-delete-json"
+                data-result="org-delete-result">
+            Delete
+        </button>
+        <div class="mt-2 text-muted" id="org-delete-result"></div>
+    </div>
+</div>
