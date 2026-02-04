@@ -8,8 +8,9 @@ public interface IOrganizationService
     Task BulkInsertEmployee(List<EmployeeDTO> employees);
     Task BulkUpdateOrganizations(List<OrganizationDTO> organizations);
     Task BulkUpdateEmployee(List<EmployeeDTO> employees);
-    Task BulkDeleteOrganizations(List<OrganizationDTO> organizations);
-    Task BulkDeleteEmployee(List<EmployeeDTO> employees);
-    Task GetAllOrganizations();
-    Task GetAllEmployeesByOrganizationId(int organizationId);
+    Task BulkDeleteOrganizations(List<int> organizationIds);
+    Task BulkDeleteEmployee(List<int> employeeIds);
+    Task<PagedResult<OrganizationDTO>> GetOrganizationsAsync(int page, int pageSize);
+    Task<PagedResult<EmployeeDTO>> GetEmployeesByOrganizationIdAsync(int organizationId, int page, int pageSize);
+    Task<OrganizationDTO?> GetOrganizationByIdAsync(int organizationId);
 }
